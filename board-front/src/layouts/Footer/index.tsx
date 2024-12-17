@@ -5,6 +5,16 @@ import './style.css';
 //          component: 푸터 레이아웃          //
 export default function Footer() {
 
+  //         event handler: 인스타 아이콘 버튼 클릭 이벤트 처리          //
+  const onInstarIconButtonClickHandler = () => {
+    window.open('https://www.instagram.com');
+  }
+
+  //         event handler: 네이버 블로그 아이콘 버튼 클릭 이벤트 처리          //
+  const onNaverBlogIconButtonClickHandler = () => {
+    window.open('https://blog.naver.com');
+  }
+
   //          render: 푸터 레이아웃 랜더링         //
   return (
     <div id='footer'>
@@ -14,20 +24,22 @@ export default function Footer() {
                     <div className='icon-box'>
                         <div className='icon logo-light-icon'></div>
                     </div>
-                    <div className='footer-logo-text'> </div>
+                    <div className='footer-logo-text'>{'Yongs board'}</div>
                 </div>
-                <div className='footer-link-box'>
-                    <div className='footer-email-link'></div>
+                <div className='footer-link-box' onClick={onInstarIconButtonClickHandler} >
+                    <div className='footer-email-link'>{'zldrgx@gmail.com'}</div>
                     <div className='icon-button'>
                         <div className='icon insta-icon'></div>
                     </div>
-                    <div className='icon-button'>
+                    <div className='icon-button' onClick={onNaverBlogIconButtonClickHandler} >
                         <div className='icon naver-blog-icon'></div>
                     </div>
                 </div>
             </div>
             <div className='footer-bottom'>
-                <div className='footer-copyright'></div>
+                <div className='footer-copyright'>
+                    {'Copyright ⓒ 2024 Yongs.'}
+                </div>
             </div>
         </div>
     </div>
