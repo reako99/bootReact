@@ -24,7 +24,7 @@ export default function Footer() {
                     <div className='icon-box'>
                         <div className='icon logo-light-icon'></div>
                     </div>
-                    <div className='footer-logo-text'>{'Yongs board'}</div>
+                    <div className='footer-logo-text'>{'Yongs Board'}</div>
                 </div>
                 <div className='footer-link-box' onClick={onInstarIconButtonClickHandler} >
                     <div className='footer-email-link'>{'zldrgx@gmail.com'}</div>
