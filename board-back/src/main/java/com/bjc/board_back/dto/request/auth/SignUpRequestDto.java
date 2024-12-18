@@ -33,6 +33,6 @@ public class SignUpRequestDto {
     private String addressDetail;
 
     @NotNull @AssertTrue
-    private Boolean agreeddPersonal;
+    private Boolean agreedPersonal;
     
 }
