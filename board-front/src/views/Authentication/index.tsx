@@ -9,6 +9,7 @@ import { useCookies } from 'react-cookie';
 import { MAIN_PATH } from 'constant';
 import { useNavigate } from 'react-router-dom';
 import { useDaumPostcodePopup, Address } from 'react-daum-postcode';
+import { useLoginUserStore } from 'stores';
 
 //          component: 인증 화면 컴포넌트          //
 export default function Authentication() {
@@ -38,6 +39,8 @@ export default function Authentication() {
     const [passwordButtonIcon, setPasswordButtonIcon] = useState<'eye-light-off-icon'|'eye-light-on-icon'>('eye-light-off-icon');
     //          state: error 상태          //
     const [error, setError] = useState<boolean>(false);
+    //          state: login user state          //
+    const { loginUser, setLoginUser, resetLoginUser } = useLoginUserStore();
 
     //          function: sign in response 처리 함수          //
     const signInResponse = (responseBody: SignInResponseDto | ResponseDto | null ) => {
