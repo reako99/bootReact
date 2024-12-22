@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 
 import com.bjc.board_back.dto.request.board.PostBoardRequestDto;
 import com.bjc.board_back.dto.response.ResponseDto;
+import com.bjc.board_back.dto.response.board.GetBoardResponseDto;
 import com.bjc.board_back.dto.response.board.PostBoardResponseDto;
 import com.bjc.board_back.entity.BoardEntity;
 import com.bjc.board_back.entity.ImageEntity;
 import com.bjc.board_back.repository.BoardRepository;
 import com.bjc.board_back.repository.ImageRepository;
 import com.bjc.board_back.repository.UserRepository;
+import com.bjc.board_back.repository.resultSet.GetBoardResultSet;
 import com.bjc.board_back.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
@@ -54,6 +56,30 @@ public class BoardServiceImple implements BoardService{
         }
         return PostBoardResponseDto.success();
     }
+
+	@Override
+	public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber) {
+
+        GetBoardResultSet resultSet = null;
+        List<ImageEntity> imageEntities = null;
+
+		try {
+            resultSet = boardRepository.getBoard(boardNumber);
+            if (resultSet == null) return GetBoardResponseDto.noExistBoard();
+
+            imageEntities = imageRepository.findByBoardNumber(boardNumber);
+
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            boardEntity.increaseViewCount();
+            boardRepository.save(boardEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetBoardResponseDto.success(resultSet, imageEntities);
+        
+	}
 
     
     

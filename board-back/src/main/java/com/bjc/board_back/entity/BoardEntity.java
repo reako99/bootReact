@@ -56,4 +56,8 @@ public class BoardEntity {
 
     }
     
+    public void increaseViewCount() {
+        this.viewCount++;
+    }
+
 }
