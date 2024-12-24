@@ -10,17 +10,17 @@ import com.bjc.board_back.dto.response.ResponseDto;
 import lombok.Getter;
 
 @Getter
-public class PutFavoriteResponseDto extends ResponseDto {
+public class PostCommentResponseDto extends ResponseDto{
 
-    private PutFavoriteResponseDto() {
+    private PostCommentResponseDto() {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
 
-    public static ResponseEntity<PutFavoriteResponseDto> success() {
-        PutFavoriteResponseDto result = new PutFavoriteResponseDto();
+    public static ResponseEntity<PostCommentResponseDto> successs() {
+        PostCommentResponseDto result = new PostCommentResponseDto();
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
-    
+
     public static ResponseEntity<ResponseDto> noExistBoard() {
         ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_BOARD, ResponseMessage.NOT_EXISTED_BOARD);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
@@ -30,4 +30,5 @@ public class PutFavoriteResponseDto extends ResponseDto {
         ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
     }
+    
 }

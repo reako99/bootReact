@@ -7,15 +7,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.bjc.board_back.dto.request.board.PostBoardRequestDto;
+import com.bjc.board_back.dto.request.board.PostCommentRequestDto;
 import com.bjc.board_back.dto.response.ResponseDto;
 import com.bjc.board_back.dto.response.board.GetBoardResponseDto;
 import com.bjc.board_back.dto.response.board.GetFavoriteListResponseDto;
 import com.bjc.board_back.dto.response.board.PostBoardResponseDto;
+import com.bjc.board_back.dto.response.board.PostCommentResponseDto;
 import com.bjc.board_back.dto.response.board.PutFavoriteResponseDto;
 import com.bjc.board_back.entity.BoardEntity;
+import com.bjc.board_back.entity.CommentEntity;
 import com.bjc.board_back.entity.FavoriteEntity;
 import com.bjc.board_back.entity.ImageEntity;
 import com.bjc.board_back.repository.BoardRepository;
+import com.bjc.board_back.repository.CommentRepository;
 import com.bjc.board_back.repository.FavoriteRepository;
 import com.bjc.board_back.repository.ImageRepository;
 import com.bjc.board_back.repository.UserRepository;
@@ -33,6 +37,7 @@ public class BoardServiceImple implements BoardService{
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
     private final FavoriteRepository favoriteRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email) {
@@ -99,7 +104,7 @@ public class BoardServiceImple implements BoardService{
            if (favoriteEntity == null) {
             favoriteEntity = new FavoriteEntity(email, boardNumber);
             favoriteRepository.save(favoriteEntity);
-            boardEntity.incereaseFavoriteCount();
+            boardEntity.increaseFavoriteCount();
            }else{
             favoriteRepository.delete(favoriteEntity);
             boardEntity.decreaseFavoriteCount();
@@ -130,6 +135,31 @@ public class BoardServiceImple implements BoardService{
             return GetFavoriteListResponseDto.databaseError();
         }   
         return GetFavoriteListResponseDto.success(resultSets);
+    }
+
+    @Override
+    public ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer boardNumber, String email) {
+        try {
+            
+
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            if (boardEntity == null) return PostCommentResponseDto.noExistBoard();
+
+            boolean existedUser = userRepository.existsByEmail(email);
+            if (!existedUser) return PostCommentResponseDto.noExistUser();
+
+            CommentEntity commentEntity = new CommentEntity(dto, boardNumber, email);
+            commentRepository.save(commentEntity);
+            
+            boardEntity.increaseCommentCount();
+            boardRepository.save(boardEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return PostCommentResponseDto.successs();
+        
     }
 
     
