@@ -23,7 +23,7 @@ public class FileServiceImple implements FileService{
     public String upload(MultipartFile file) {
         
         if (file.isEmpty()) return null;
-
+        
         String originalFileName = file.getOriginalFilename();
         String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
         String uuid = UUID.randomUUID().toString();
