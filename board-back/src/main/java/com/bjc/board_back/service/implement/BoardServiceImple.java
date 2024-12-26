@@ -10,6 +10,7 @@ import com.bjc.board_back.dto.request.board.PostBoardRequestDto;
 import com.bjc.board_back.dto.request.board.PostCommentRequestDto;
 import com.bjc.board_back.dto.response.ResponseDto;
 import com.bjc.board_back.dto.response.board.GetBoardResponseDto;
+import com.bjc.board_back.dto.response.board.GetCommentListResponseDto;
 import com.bjc.board_back.dto.response.board.GetFavoriteListResponseDto;
 import com.bjc.board_back.dto.response.board.PostBoardResponseDto;
 import com.bjc.board_back.dto.response.board.PostCommentResponseDto;
@@ -24,6 +25,7 @@ import com.bjc.board_back.repository.FavoriteRepository;
 import com.bjc.board_back.repository.ImageRepository;
 import com.bjc.board_back.repository.UserRepository;
 import com.bjc.board_back.repository.resultSet.GetBoardResultSet;
+import com.bjc.board_back.repository.resultSet.GetCommentListResultSet;
 import com.bjc.board_back.repository.resultSet.GetFavoriteListResultSet;
 import com.bjc.board_back.service.BoardService;
 
@@ -160,6 +162,22 @@ public class BoardServiceImple implements BoardService{
         }
         return PostCommentResponseDto.successs();
         
+    }
+
+    @Override
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer boardNumber) {
+        List<GetCommentListResultSet> resultSets = new ArrayList<>();
+        try {
+            boolean existedBoard = boardRepository.existsByBoardNumber(boardNumber);
+            if (!existedBoard) return GetCommentListResponseDto.noExistBoard();
+
+            resultSets = commentRepository.getCommentList(boardNumber);
+            
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetCommentListResponseDto.success(resultSets);
     }
 
     
