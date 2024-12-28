@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './style.css';
 import FavoriteItem from 'components/FavoriteItem';
-import { CommentListItem, FavoriteListItem } from 'types/interface';
-import { commentListMock, favoriteListMock } from 'mocks';
+import { Board, CommentListItem, FavoriteListItem } from 'types/interface';
+import { boardMock, commentListMock, favoriteListMock } from 'mocks';
 import CommentItem from 'components/CommentItem';
 import Pagination from 'components/Pagination';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
 import { useLoginUserStore } from 'stores';
 import { useNavigate, useParams } from 'react-router-dom';
-import { USER_PATH } from 'constant';
+import { BOARD_DETAIL_PATH, BOARD_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
 
 //          component: 게시물 상세 보기 컴포넌트          //
 export default function BoardDetail() {
@@ -28,7 +28,7 @@ export default function BoardDetail() {
     //         state: more button state          //
     const [showMore, setShowMore] = useState<boolean>(false);
     //         state: board state          //
-    const [board, setBoard] = useState<Board>();
+    const [board, setBoard] = useState<Board | null>(null);
 
     //         event handler: more button click event handler          //
     const onMoreButtonClickHandler = () => {
@@ -36,39 +36,62 @@ export default function BoardDetail() {
 
     }
 
-    //         event handler: more button click event handler          //
-    const onNicknameClickHandler = () => {
-      navigator(USER_PATH())
+    //         event handler: update button click event handler          //
+    const onUpdateButtonClickHandler = () => {
+      if(!board || !loginUser) return;
+      if(loginUser.email !== board.writerEmail) return;
+      navigator(BOARD_PATH() + '/' + BOARD_UPDATE_PATH(board.boardNumber));
     }
 
+    //         event handler: delete button click event handler          //
+    const onDeleteButtonClickHandler = () => {
+      if(!board || !loginUser) return;
+      if(loginUser.email !== board.writerEmail) return;
+      //TODO: delete request.
+      navigator(MAIN_PATH());
+    }
+
+    //         event handler: nickname click event handler          //
+    const onNicknameClickHandler = () => {
+      if (!board) return;
+      navigator(USER_PATH(board.writerEmail));
+    }
+
+    //         effect: reload board when board number path variable change           //
+    useEffect(() => {
+      setBoard(boardMock);
+    } , [boardNumber])
+
+    
     //         render : 게시물 상세 상단 컴포넌트 랜더링          //
+    if (!board) return <></>
     return (
       <div id='board-detail-top'>
         <div className='board-detail-top-header'>
-          <div className='board-detail-title'>{'제목자리'}</div>
+          <div className='board-detail-title'>{board.title}</div>
           <div className='board-detail-top-sub-box'>
             <div className='board-detail-write-info-box'>
-              <div className='board-detail-writer-profile-image' style={{backgroundImage: `url(${defaultProfileImage})`}}></div>
-              <div className='board-detail-writer-nickname'>{'닉네임'}</div>
+              <div className='board-detail-writer-profile-image' style={{backgroundImage: `url(${board.writerProfileImage? board.writerProfileImage : defaultProfileImage})`}}></div>
+              <div className='board-detail-writer-nickname' onClick={onNicknameClickHandler}>{board.writerNickname}</div>
               <div className='board-detail-info-divider'>{'\|'}</div>
-              <div className='board-detail-write-date'>{'2024-12-27'}</div>
+              <div className='board-detail-write-date'>{board.writeDateTime}</div>
             </div>
             <div className='icon-button' onClick={onMoreButtonClickHandler}>
               <div className='icon more-icon'></div>
             </div>
             {showMore &&             
             <div className='board-detail-more-box'>
-              <div className='board-detail-update-button'>{'수정'}</div>
+              <div className='board-detail-update-button' onClick={onUpdateButtonClickHandler}>{'수정'}</div>
               <div className='divider'></div>
-              <div className='board-detail-delete-button'>{'삭제'}</div>
+              <div className='board-detail-delete-button' onClick={onDeleteButtonClickHandler}>{'삭제'}</div>
             </div>
             }
           </div>
         </div>
         <div className='divider'></div>
         <div className='board-detail-top-main'>
-          <div className='board-detail-main-text'>{'본문'}</div>
-          <img className='board-detail-main-image' />
+          <div className='board-detail-main-text'>{board.content}</div>
+          {board.boardImageList.map(image => <img className='board-detail-main-image' src={image}/>)}          
         </div>
       </div>
     );
