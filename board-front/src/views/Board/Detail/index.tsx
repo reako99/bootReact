@@ -6,21 +6,39 @@ import { commentListMock, favoriteListMock } from 'mocks';
 import CommentItem from 'components/CommentItem';
 import Pagination from 'components/Pagination';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
+import { useLoginUserStore } from 'stores';
+import { useNavigate, useParams } from 'react-router-dom';
+import { USER_PATH } from 'constant';
 
 //          component: 게시물 상세 보기 컴포넌트          //
 export default function BoardDetail() {
 
+  //          state: board number path variable state            //
+  const { boardNumber } = useParams();
+
+  //          state: login user state            //
+  const { loginUser } = useLoginUserStore();
+
+  //          function: navigate function          //
+  const navigator = useNavigate();
   
   //          component: 게시물 상세 상단 컴포넌트          //
   const BoardDetailTop = () => {
 
     //         state: more button state          //
     const [showMore, setShowMore] = useState<boolean>(false);
+    //         state: board state          //
+    const [board, setBoard] = useState<Board>();
 
     //         event handler: more button click event handler          //
     const onMoreButtonClickHandler = () => {
       setShowMore(!showMore);
 
+    }
+
+    //         event handler: more button click event handler          //
+    const onNicknameClickHandler = () => {
+      navigator(USER_PATH())
     }
 
     //         render : 게시물 상세 상단 컴포넌트 랜더링          //
