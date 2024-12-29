@@ -12,6 +12,7 @@ import com.bjc.board_back.dto.response.ResponseDto;
 import com.bjc.board_back.dto.response.board.GetBoardResponseDto;
 import com.bjc.board_back.dto.response.board.GetCommentListResponseDto;
 import com.bjc.board_back.dto.response.board.GetFavoriteListResponseDto;
+import com.bjc.board_back.dto.response.board.IncreaseViewCountResponseDto;
 import com.bjc.board_back.dto.response.board.PostBoardResponseDto;
 import com.bjc.board_back.dto.response.board.PostCommentResponseDto;
 import com.bjc.board_back.dto.response.board.PutFavoriteResponseDto;
@@ -81,10 +82,6 @@ public class BoardServiceImple implements BoardService{
             if (resultSet == null) return GetBoardResponseDto.noExistBoard();
 
             imageEntities = imageRepository.findByBoardNumber(boardNumber);
-
-            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
-            boardEntity.increaseViewCount();
-            boardRepository.save(boardEntity);
 
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -178,6 +175,22 @@ public class BoardServiceImple implements BoardService{
             return ResponseDto.databaseError();
         }
         return GetCommentListResponseDto.success(resultSets);
+    }
+
+    @Override
+    public ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(Integer boardNumber) {
+        try {
+            
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            if(boardEntity == null) return IncreaseViewCountResponseDto.noExistBoard();
+            boardEntity.increaseViewCount();
+            boardRepository.save(boardEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return IncreaseViewCountResponseDto.success();
     }
 
     

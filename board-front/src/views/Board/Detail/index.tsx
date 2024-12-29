@@ -2,13 +2,16 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import './style.css';
 import FavoriteItem from 'components/FavoriteItem';
 import { Board, CommentListItem, FavoriteListItem } from 'types/interface';
-import { boardMock, commentListMock, favoriteListMock } from 'mocks';
 import CommentItem from 'components/CommentItem';
 import Pagination from 'components/Pagination';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
 import { useLoginUserStore } from 'stores';
 import { useNavigate, useParams } from 'react-router-dom';
-import { BOARD_DETAIL_PATH, BOARD_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
+import { BOARD_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
+import { getBoardRequest, increaseViewCountRequest } from 'apis';
+import GetBoardResponseDto from 'apis/response/board/get-board-response.dto';
+import { ResponseDto } from 'apis/response';
+import { IncreaseViewCountResponseDto } from 'apis/response/board';
 
 //          component: 게시물 상세 보기 컴포넌트          //
 export default function BoardDetail() {
@@ -21,6 +24,15 @@ export default function BoardDetail() {
 
   //          function: navigate function          //
   const navigator = useNavigate();
+
+  //         function: increase view count function          //
+  const increaseViewCountResponse = (responseBody : IncreaseViewCountResponseDto | ResponseDto | null) => {
+    if (!responseBody) return;
+    const { code } = responseBody;
+    if (code === 'NB') alert('존재하지 않는 게시물입니다.');
+    if (code === 'DBE') alert('데이터베이스 오류입니다.');
+
+  }
   
   //          component: 게시물 상세 상단 컴포넌트          //
   const BoardDetailTop = () => {
@@ -29,6 +41,20 @@ export default function BoardDetail() {
     const [showMore, setShowMore] = useState<boolean>(false);
     //         state: board state          //
     const [board, setBoard] = useState<Board | null>(null);
+
+    //          function: get board resopnse function          //
+    const getBoardResponse = (responseBody: GetBoardResponseDto | ResponseDto | null) => {
+      if (!responseBody) return;
+      const { code } = responseBody;
+      if ( code === 'NB') alert('존재하지 않는 게시물입니다.');
+      if ( code === 'DBE') alert('데이터베이스 오류입니다.');
+      if ( code !== 'SU') {
+        navigator(MAIN_PATH());
+        return;
+      }
+      const board:Board = {...responseBody as GetBoardResponseDto};
+      setBoard(board);
+    }
 
     //         event handler: more button click event handler          //
     const onMoreButtonClickHandler = () => {
@@ -59,7 +85,12 @@ export default function BoardDetail() {
 
     //         effect: reload board when board number path variable change           //
     useEffect(() => {
-      setBoard(boardMock);
+      if (!boardNumber) {
+        navigator(MAIN_PATH());
+        return;
+      }
+      getBoardRequest(boardNumber).then(getBoardResponse)
+
     } , [boardNumber])
 
     
@@ -147,11 +178,7 @@ export default function BoardDetail() {
       commentRef.current.style.height = `${commentRef.current.scrollHeight}px`;
     }
 
-    //          effect: reload favorite and comment list when change board number path variable          //
-    useEffect(() => {
-      setFavoriteList(favoriteListMock);
-      setCommentList(commentListMock);
-    }, [boardNumber]);
+  
 
     //         render : 게시물 상세 하단 컴포넌트 랜더링          //
     return (
@@ -220,6 +247,19 @@ export default function BoardDetail() {
       </div>
     );
   }
+
+
+  //          effect: increase view count when change board number path variable          //
+  let effectFlag = true;
+  useEffect(() => {
+    if (!boardNumber) return;
+    if (effectFlag) {
+      effectFlag = false;
+      return;
+    }
+
+    increaseViewCountRequest(boardNumber).then(increaseViewCountResponse);
+  }, [boardNumber]);
 
   //         render : 게시물 상세 보기 컴포넌트 랜더링          //
   return (
