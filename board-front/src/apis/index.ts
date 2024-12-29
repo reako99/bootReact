@@ -54,7 +54,7 @@ const POST_COMMENT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/
 
 const PUT_FAVORITE_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/favorite`;
 
-const DELETE_BOARD_URL = (boardNumber: number | string ) => `${API_DOMAIN}/board/${boardNumber}/delete`;
+const DELETE_BOARD_URL = (boardNumber: number | string ) => `${API_DOMAIN}/board/${boardNumber}`;
 
 export const getBoardRequest = async (boardNumber: number | string ) => {
     const result = await axios.get(GET_BOARD_URL(boardNumber))

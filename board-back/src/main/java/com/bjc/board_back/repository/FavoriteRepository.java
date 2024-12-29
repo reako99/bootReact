@@ -10,6 +10,8 @@ import com.bjc.board_back.entity.FavoriteEntity;
 import com.bjc.board_back.entity.primaryKey.FavoritePk;
 import com.bjc.board_back.repository.resultSet.GetFavoriteListResultSet;
 
+import jakarta.transaction.Transactional;
+
 @Repository
 public interface FavoriteRepository extends JpaRepository<FavoriteEntity, FavoritePk> {
     
@@ -28,4 +30,8 @@ public interface FavoriteRepository extends JpaRepository<FavoriteEntity, Favori
         nativeQuery = true
         )
         List<GetFavoriteListResultSet> getFavoriteList(Integer boardNumber);
+
+        
+    @Transactional
+    void deleteByBoardNumber(Integer boardNumber);
 }
