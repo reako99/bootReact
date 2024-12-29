@@ -37,6 +37,8 @@ export default function BoardDetail() {
   //          component: 게시물 상세 상단 컴포넌트          //
   const BoardDetailTop = () => {
 
+    //         state: is writer state          //
+    const [isWriter, setWriter] = useState<boolean>(false);
     //         state: more button state          //
     const [showMore, setShowMore] = useState<boolean>(false);
     //         state: board state          //
@@ -54,6 +56,12 @@ export default function BoardDetail() {
       }
       const board:Board = {...responseBody as GetBoardResponseDto};
       setBoard(board);
+      if (!loginUser) {
+        setWriter(false);
+        return;
+      }
+      const isWriter = loginUser.email === board.writerEmail;
+      setWriter(isWriter);
     }
 
     //         event handler: more button click event handler          //
@@ -107,9 +115,11 @@ export default function BoardDetail() {
               <div className='board-detail-info-divider'>{'\|'}</div>
               <div className='board-detail-write-date'>{board.writeDateTime}</div>
             </div>
+            {isWriter && 
             <div className='icon-button' onClick={onMoreButtonClickHandler}>
               <div className='icon more-icon'></div>
             </div>
+            }
             {showMore &&             
             <div className='board-detail-more-box'>
               <div className='board-detail-update-button' onClick={onUpdateButtonClickHandler}>{'수정'}</div>
