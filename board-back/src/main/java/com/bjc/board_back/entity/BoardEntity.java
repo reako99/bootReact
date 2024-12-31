@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
+import com.bjc.board_back.dto.request.board.PatchBoardRequestDto;
 import com.bjc.board_back.dto.request.board.PostBoardRequestDto;
 
 import jakarta.persistence.Entity;
@@ -70,5 +71,10 @@ public class BoardEntity {
 
     public void decreaseFavoriteCount() {
         this.favoriteCount--;
+    }
+
+    public void patchBoard(PatchBoardRequestDto dto) {
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
     }
 }
