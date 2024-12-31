@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.bjc.board_back.dto.request.board.PostBoardRequestDto;
 import com.bjc.board_back.dto.request.board.PostCommentRequestDto;
 import com.bjc.board_back.dto.response.board.DeleteBoardResponseDto;
