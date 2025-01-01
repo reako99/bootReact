@@ -19,6 +19,7 @@ import com.bjc.board_back.dto.response.board.DeleteBoardResponseDto;
 import com.bjc.board_back.dto.response.board.GetBoardResponseDto;
 import com.bjc.board_back.dto.response.board.GetCommentListResponseDto;
 import com.bjc.board_back.dto.response.board.GetFavoriteListResponseDto;
+import com.bjc.board_back.dto.response.board.GetLatestBoardListResponseDto;
 import com.bjc.board_back.dto.response.board.IncreaseViewCountResponseDto;
 import com.bjc.board_back.dto.response.board.PatchBoardResponseDto;
 import com.bjc.board_back.dto.response.board.PostBoardResponseDto;
@@ -56,6 +57,12 @@ public class BoardController {
         @PathVariable("boardNumber") Integer boardNumber
     ) {
         ResponseEntity<? super GetCommentListResponseDto> response = boardService.getCommentList(boardNumber);
+        return response;
+    }
+
+    @GetMapping("/latest-list")
+    public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList() {
+        ResponseEntity<? super GetLatestBoardListResponseDto> response = boardService.getLatestBoardList();
         return response;
     }
 
