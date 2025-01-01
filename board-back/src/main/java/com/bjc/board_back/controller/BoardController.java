@@ -55,8 +55,8 @@ public class BoardController {
     public ResponseEntity<? super GetCommentListResponseDto> getCommentList(
         @PathVariable("boardNumber") Integer boardNumber
     ) {
-        ResponseEntity<? super GetCommentListResponseDto> resopnse = boardService.getCommentList(boardNumber);
-        return resopnse;
+        ResponseEntity<? super GetCommentListResponseDto> response = boardService.getCommentList(boardNumber);
+        return response;
     }
 
     @PostMapping("")

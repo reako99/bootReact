@@ -3,8 +3,8 @@ import { SignInRequestDto, SignUpRequestDto } from "./request/auth";
 import { SignInResponseDto, SignUpResponseDto } from "./response/auth";
 import { ResponseDto } from "./response";
 import { GetSignInUserResponseDto } from "./response/user";
-import { PostBoardRequestDto, PostCommentRequestDto } from "./request/board";
-import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, IncreaseViewCountResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from "./response/board";
+import { PatchBoardRequestDto, PostBoardRequestDto, PostCommentRequestDto } from "./request/board";
+import { DeleteBoardResponseDto, GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, IncreaseViewCountResponseDto, PatchBoardResponseDto, PostBoardResponseDto, PostCommentResponseDto, PutFavoriteResponseDto } from "./response/board";
 
 const DOMAIN = 'http://localhost:4000';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -24,8 +24,8 @@ export const signInRequest = async(requestBody: SignInRequestDto) => {
     })
     .catch(error => {
         console.log(error);
-        if (!error.response.data) return null;
-        const responseBody: ResponseDto = error.response.data;
+        if (!error.response) return null;
+        const responseBody: ResponseDto = error.response;
         return responseBody;
     });
     return result;
@@ -38,7 +38,7 @@ export const signUpRequest = async(requestBody: SignUpRequestDto) => {
         return responseBody;
     })
     .catch(error => {
-        const responseBody: ResponseDto = error.resopnse.data;
+        const responseBody: ResponseDto = error.response;
         return responseBody;
     });
     return result;
@@ -54,6 +54,8 @@ const POST_COMMENT_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/
 
 const PUT_FAVORITE_URL = (boardNumber: number | string) => `${API_DOMAIN}/board/${boardNumber}/favorite`;
 
+const PATCH_BOARD_URL = (boardNumber: number | string ) => `${API_DOMAIN}/board/${boardNumber}`;
+
 const DELETE_BOARD_URL = (boardNumber: number | string ) => `${API_DOMAIN}/board/${boardNumber}`;
 
 export const getBoardRequest = async (boardNumber: number | string ) => {
@@ -64,7 +66,7 @@ export const getBoardRequest = async (boardNumber: number | string ) => {
     })
     .catch(error => {
         if(!error.response) return null;
-        const responseBody: ResponseDto = error.resopnse.data;
+        const responseBody: ResponseDto = error.response;
         return responseBody;
     });
     return result;
@@ -78,7 +80,7 @@ export const increaseViewCountRequest = async (boardNumber: number | string) => 
     })
     .catch(error => {
         if(!error.response) return null;
-        const responseBody: ResponseDto = error.resopnse.data;
+        const responseBody: ResponseDto = error.response;
         return responseBody;
     });
     return result;
@@ -87,12 +89,12 @@ export const increaseViewCountRequest = async (boardNumber: number | string) => 
 export const getFavoriteListRequest = async (boardNumber : number | string) => {
     const result = await axios.get(GET_FAVORITE_LIST_URL(boardNumber))
     .then(response => {
-        const resopnseBody: GetFavoriteListResponseDto = response.data;
-        return resopnseBody;
+        const responseBody: GetFavoriteListResponseDto = response.data;
+        return responseBody;
     })
     .catch(error => {
         if (!error.response) return null;
-        const responseBody : ResponseDto = error.response.data;
+        const responseBody : ResponseDto = error.response;
         return responseBody;
 
     });
@@ -101,12 +103,12 @@ export const getFavoriteListRequest = async (boardNumber : number | string) => {
 export const getCommentListRequest = async (boardNumber : number | string) => {
     const result = await axios.get(GET_COMMENT_LIST_URL(boardNumber))
     .then(response => {
-        const resopnseBody: GetCommentListResponseDto = response.data;
-        return resopnseBody;
+        const responseBody: GetCommentListResponseDto = response.data;
+        return responseBody;
     })
     .catch(error => {
         if (!error.response) return null;
-        const responseBody : ResponseDto = error.response.data;
+        const responseBody : ResponseDto = error.response;
         return responseBody;
 
     });
@@ -121,7 +123,7 @@ export const postBoardRequest = async (requestBody: PostBoardRequestDto, accessT
      })
      .catch(error => {
         if (!error.response) return null;
-        const responseBody: ResponseDto = error.resopnse.data;
+        const responseBody: ResponseDto = error.response;
         return responseBody;
      })
      return result;
@@ -135,7 +137,7 @@ export const postCommentRequest = async (requestBody: PostCommentRequestDto, acc
      })
      .catch(error => {
         if (!error.response) return null;
-        const responseBody: ResponseDto = error.resopnse.data;
+        const responseBody: ResponseDto = error.response;
         return responseBody;
      })
      return result;
@@ -149,8 +151,22 @@ export const putFavoriteRequest = async (boardNumber: number | string, accessTok
     })
     .catch(error => {
         if (!error ) return null;
-        const responseBody: ResponseDto = error.response.data;
+        const responseBody: ResponseDto = error.response;
         return responseBody;
+    });
+    return result;
+}
+
+export const patchBoardRequest = async (boardNumber : number | string, requestBody : PatchBoardRequestDto, accessToken : string ) => {
+    const result = await axios.patch(PATCH_BOARD_URL(boardNumber), requestBody, authorization(accessToken))
+    .then(response => {
+        const responseBody: PatchBoardResponseDto = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        const responseBody: ResponseDto = error.response;
+        return responseBody;
+
     });
     return result;
 }
@@ -163,7 +179,7 @@ export const deleteBoardRequest = async (boardNumber: number | string, accessTok
     })
     .catch(error => {
         if (!error ) return null;
-        const responseBody: ResponseDto = error.response.data;
+        const responseBody: ResponseDto = error.response;
         return responseBody;
     });
     return result;
@@ -174,12 +190,12 @@ const GET_SIGN_IN_USER_URL = () => `${API_DOMAIN}/user`;
 export const GetSignInUserRequest = async (accessToken: string) => {
     const result = await axios.get(GET_SIGN_IN_USER_URL(), authorization(accessToken))
     .then(response => {
-        const resopnseBody: GetSignInUserResponseDto = response.data;
-        return resopnseBody;
+        const responseBody: GetSignInUserResponseDto = response.data;
+        return responseBody;
     })
     .catch(error => {
-        if (!error.resopnse) return null;
-        const responseBody: ResponseDto = error.response.data;
+        if (!error.response) return null;
+        const responseBody: ResponseDto = error.response;
         return responseBody;
     });
     return result;

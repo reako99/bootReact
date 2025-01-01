@@ -19,6 +19,9 @@ import { usePagination } from 'hooks';
 //          component: 게시물 상세 보기 컴포넌트          //
 export default function BoardDetail() {
 
+  //         state: board state          //
+  const [board, setBoard] = useState<Board | null>(null);
+
   //          state: board number path variable state            //
   const { boardNumber } = useParams();
 
@@ -28,9 +31,42 @@ export default function BoardDetail() {
   //          state: cookie state          //
   const [cookies, setCookies] = useCookies();
 
+  //         state: is writer state          //
+  const [isWriter, setWriter] = useState<boolean>(false);
+
+  //          function: get board response function          //
+  const getBoardResponse = (responseBody: GetBoardResponseDto | ResponseDto | null) => {
+    if (!responseBody) return;
+    const { code } = responseBody;
+    if ( code === 'NB') alert('존재하지 않는 게시물입니다.');
+    if ( code === 'DBE') alert('데이터베이스 오류입니다.');
+    if ( code !== 'SU') {
+      navigate(MAIN_PATH());
+      return;
+    }
+    const board:Board = {...responseBody as GetBoardResponseDto};
+    setBoard(board);
+    if (!loginUser) {
+      setWriter(false);
+      return;
+    }
+    const isWriter = loginUser.email === board.writerEmail;
+    setWriter(isWriter);
+  }
+
+  //         effect: reload board when board number path variable change           //
+  useEffect(() => {
+    if (!boardNumber) {
+      navigate(MAIN_PATH());
+      return;
+    }
+    getBoardRequest(boardNumber).then(getBoardResponse);
+    
+  } , [boardNumber])
+
 
   //          function: navigate function          //
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
   //         function: increase view count function          //
   const increaseViewCountResponse = (responseBody : IncreaseViewCountResponseDto | ResponseDto | null) => {
@@ -44,12 +80,10 @@ export default function BoardDetail() {
   //          component: 게시물 상세 상단 컴포넌트          //
   const BoardDetailTop = () => {
 
-    //         state: is writer state          //
-    const [isWriter, setWriter] = useState<boolean>(false);
+    
     //         state: more button state          //
     const [showMore, setShowMore] = useState<boolean>(false);
-    //         state: board state          //
-    const [board, setBoard] = useState<Board | null>(null);
+    
 
     //           function: change date format function          //
     const getWriteDatetimeFormat = () => {
@@ -58,25 +92,7 @@ export default function BoardDetail() {
       return date.format('YYYY. MM. DD.');
     }
 
-    //          function: get board response function          //
-    const getBoardResponse = (responseBody: GetBoardResponseDto | ResponseDto | null) => {
-      if (!responseBody) return;
-      const { code } = responseBody;
-      if ( code === 'NB') alert('존재하지 않는 게시물입니다.');
-      if ( code === 'DBE') alert('데이터베이스 오류입니다.');
-      if ( code !== 'SU') {
-        navigator(MAIN_PATH());
-        return;
-      }
-      const board:Board = {...responseBody as GetBoardResponseDto};
-      setBoard(board);
-      if (!loginUser) {
-        setWriter(false);
-        return;
-      }
-      const isWriter = loginUser.email === board.writerEmail;
-      setWriter(isWriter);
-    }
+    
 
     //          function: delete board response function          //
     const deleteBoardResponse = (responseBody: DeleteBoardResponseDto | ResponseDto | null) => {
@@ -91,7 +107,7 @@ export default function BoardDetail() {
       if ( code !== 'SU') {
         return;
       }
-      navigator(MAIN_PATH());
+      navigate(MAIN_PATH());
     }
 
     
@@ -106,7 +122,7 @@ export default function BoardDetail() {
     const onUpdateButtonClickHandler = () => {
       if(!board || !loginUser) return;
       if(loginUser.email !== board.writerEmail) return;
-      navigator(BOARD_PATH() + '/' + BOARD_UPDATE_PATH(board.boardNumber));
+      navigate(BOARD_PATH() + '/' + BOARD_UPDATE_PATH(board.boardNumber));
     }
 
     //         event handler: delete button click event handler          //
@@ -119,18 +135,10 @@ export default function BoardDetail() {
     //         event handler: nickname click event handler          //
     const onNicknameClickHandler = () => {
       if (!board) return;
-      navigator(USER_PATH(board.writerEmail));
+      navigate(USER_PATH(board.writerEmail));
     }
 
-    //         effect: reload board when board number path variable change           //
-    useEffect(() => {
-      if (!boardNumber) {
-        navigator(MAIN_PATH());
-        return;
-      }
-      getBoardRequest(boardNumber).then(getBoardResponse);
-      
-    } , [boardNumber])
+    
 
     
     //         render : 게시물 상세 상단 컴포넌트 랜더링          //
@@ -246,7 +254,7 @@ export default function BoardDetail() {
     //         effect: reload board when board number path variable change           //
     useEffect(() => {
       if (!boardNumber) {
-        navigator(MAIN_PATH());
+        navigate(MAIN_PATH());
         return;
       }
       getFavoriteListRequest(boardNumber).then(getFavoriteListResponse);
@@ -308,6 +316,7 @@ export default function BoardDetail() {
   
 
     //         render : 게시물 상세 하단 컴포넌트 랜더링          //
+    if (!board) return <></>
     return (
       <div id='board-detail-bottom'>
         <div className='board-detail-bottom-button-box'>
@@ -398,6 +407,7 @@ export default function BoardDetail() {
   }, [boardNumber]);
 
   //         render : 게시물 상세 보기 컴포넌트 랜더링          //
+  if (!board) return <h2>{'NOT FOUND 404'}</h2>
   return (
     <div id='board-detail-wrapper'>
       <div className='board-detail-container'>
