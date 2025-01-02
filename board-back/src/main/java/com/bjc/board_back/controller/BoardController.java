@@ -20,6 +20,7 @@ import com.bjc.board_back.dto.response.board.GetBoardResponseDto;
 import com.bjc.board_back.dto.response.board.GetCommentListResponseDto;
 import com.bjc.board_back.dto.response.board.GetFavoriteListResponseDto;
 import com.bjc.board_back.dto.response.board.GetLatestBoardListResponseDto;
+import com.bjc.board_back.dto.response.board.GetTop3BoardListResponseDto;
 import com.bjc.board_back.dto.response.board.IncreaseViewCountResponseDto;
 import com.bjc.board_back.dto.response.board.PatchBoardResponseDto;
 import com.bjc.board_back.dto.response.board.PostBoardResponseDto;
@@ -63,6 +64,12 @@ public class BoardController {
     @GetMapping("/latest-list")
     public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList() {
         ResponseEntity<? super GetLatestBoardListResponseDto> response = boardService.getLatestBoardList();
+        return response;
+    }
+
+    @GetMapping("/top-3")
+    public ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList() {
+        ResponseEntity<? super GetTop3BoardListResponseDto> response = boardService.getTop3BoardList();
         return response;
     }
 

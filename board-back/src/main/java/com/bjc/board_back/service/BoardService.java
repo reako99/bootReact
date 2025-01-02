@@ -15,12 +15,14 @@ import com.bjc.board_back.dto.response.board.PatchBoardResponseDto;
 import com.bjc.board_back.dto.response.board.PostBoardResponseDto;
 import com.bjc.board_back.dto.response.board.PostCommentResponseDto;
 import com.bjc.board_back.dto.response.board.PutFavoriteResponseDto;
+import com.bjc.board_back.dto.response.board.GetTop3BoardListResponseDto;
 
 public interface BoardService {
     ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber);
     ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(Integer boardNumber);
     ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer baordNumber);
     ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList();
+    ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList();
 
     ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email);
     ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer boardNumber, String email);
