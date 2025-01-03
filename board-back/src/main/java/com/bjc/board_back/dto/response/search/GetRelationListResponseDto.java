@@ -16,15 +16,15 @@ import lombok.Getter;
 @Getter
 public class GetRelationListResponseDto extends ResponseDto {
 
-    private List<String> relativeWordList;
+    private List<String> relationWordList;
     
     private GetRelationListResponseDto(List<GetRelationListResultSet> resultSets) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        List<String> relativeWordList = new ArrayList<>();
+        List<String> relationWordList = new ArrayList<>();
         for (GetRelationListResultSet resultSet: resultSets) {
-            relativeWordList.add(resultSet.getSearchWord());
+            relationWordList.add(resultSet.getSearchWord());
         }
-        this.relativeWordList = relativeWordList;
+        this.relationWordList = relationWordList;
     }
 
     public static ResponseEntity<GetRelationListResponseDto> success(List<GetRelationListResultSet> resultSets) {
