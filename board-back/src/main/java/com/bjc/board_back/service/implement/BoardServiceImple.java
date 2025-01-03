@@ -19,6 +19,7 @@ import com.bjc.board_back.dto.response.board.GetBoardResponseDto;
 import com.bjc.board_back.dto.response.board.GetCommentListResponseDto;
 import com.bjc.board_back.dto.response.board.GetFavoriteListResponseDto;
 import com.bjc.board_back.dto.response.board.GetLatestBoardListResponseDto;
+import com.bjc.board_back.dto.response.board.GetSearchBoardResponseDto;
 import com.bjc.board_back.dto.response.board.GetTop3BoardListResponseDto;
 import com.bjc.board_back.dto.response.board.IncreaseViewCountResponseDto;
 import com.bjc.board_back.dto.response.board.PatchBoardResponseDto;
@@ -30,11 +31,13 @@ import com.bjc.board_back.entity.BoardListViewEntity;
 import com.bjc.board_back.entity.CommentEntity;
 import com.bjc.board_back.entity.FavoriteEntity;
 import com.bjc.board_back.entity.ImageEntity;
+import com.bjc.board_back.entity.SearchLogEntity;
 import com.bjc.board_back.repository.BoardListViewRepository;
 import com.bjc.board_back.repository.BoardRepository;
 import com.bjc.board_back.repository.CommentRepository;
 import com.bjc.board_back.repository.FavoriteRepository;
 import com.bjc.board_back.repository.ImageRepository;
+import com.bjc.board_back.repository.SearchLogRepository;
 import com.bjc.board_back.repository.UserRepository;
 import com.bjc.board_back.repository.resultSet.GetBoardResultSet;
 import com.bjc.board_back.repository.resultSet.GetCommentListResultSet;
@@ -50,8 +53,9 @@ public class BoardServiceImple implements BoardService{
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
-    private final FavoriteRepository favoriteRepository;
     private final CommentRepository commentRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final SearchLogRepository searchLogRepository;
     private final BoardListViewRepository boardListViewRepository;
 
     @Override
@@ -296,6 +300,23 @@ public class BoardServiceImple implements BoardService{
         }
 
         return GetTop3BoardListResponseDto.success(boardListViewEntities);
+    }
+
+    @Override
+    public ResponseEntity<? super GetSearchBoardResponseDto> getSearchBoardList(String searchWord, String preSearchWord) {
+        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+        try {
+            boardListViewEntities = boardListViewRepository.findByTitleContainsOrContentContainsOrderByWriteDatetimeDesc(searchWord, searchWord);
+            boolean relation = preSearchWord != null;
+            SearchLogEntity searchLogEntity = new SearchLogEntity(searchWord, preSearchWord, false);
+            searchLogRepository.save(searchLogEntity);
+
+            
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetSearchBoardResponseDto.success(boardListViewEntities);
     }
 
     
