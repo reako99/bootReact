@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.bjc.board_back.dto.response.ResponseDto;
 import com.bjc.board_back.dto.response.user.GetSignInUserResponseDto;
+import com.bjc.board_back.dto.response.user.GetUserResponseDto;
 import com.bjc.board_back.entity.UserEntity;
 import com.bjc.board_back.repository.UserRepository;
 import com.bjc.board_back.service.UserService;
@@ -32,6 +33,21 @@ public class UserServiceImpl implements UserService {
             return ResponseDto.databaseError();
         }
         return GetSignInUserResponseDto.success(userEntity);
+    }
+
+    @Override
+    public ResponseEntity<? super GetUserResponseDto> getUser(String email) {
+
+        UserEntity userEntity = null;
+
+        try {
+            userEntity = userRepository.findByEmail(email);
+            if (userEntity == null ) return GetUserResponseDto.noExistUser();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetUserResponseDto.success(userEntity);
     }
     
 }
