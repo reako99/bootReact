@@ -1,13 +1,28 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import './style.css';
 import defualtProfileImage from 'assets/image/default-profile-image.png';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { BoardListItem } from 'types/interface';
+import { latestBoardListMock } from 'mocks';
+import BoardItem from 'components/BoardItem';
+import { AUTH_PATH, BOARD_PATH, BOARD_WRITE_PATH, USER_PATH } from 'constant';
+import { useLoginUserStore } from 'stores';
 
 //          component: 유저 화면 컴포넌트          //
 export default function User() {
   
-    //          state: user email state          //
-    const { userEmail } = useParams();
+  //          state: user email state          //
+  const { userEmail } = useParams();
+
+  //          state: login user state          //
+  const { loginUser } = useLoginUserStore();
+  //          state: my page state          //
+  const [isMyPage, setMyPage] = useState<boolean>(false);
+
+
+
+  //          function : navigate func          //
+  const navigate = useNavigate();
 
   //         component: 유저 상단 화면 컴포넌트          //
   const UserTop = () => {
@@ -15,9 +30,6 @@ export default function User() {
     //          state: image file input ref state           //
     const imageInputRef = useRef<HTMLInputElement | null >(null);
     
-    //          state: my page state          //
-    const [isMyPage, setMyPage] = useState<boolean>(true);
-
     //          state: nickname change state          //
     const [isNicknameChange, setNicknameChange] = useState<boolean>(false);
 
@@ -112,9 +124,61 @@ export default function User() {
 
   //         component: 유저 하단 화면 컴포넌트          //
   const UserBottom = () => {
+
+    //          state: board count state          //
+    const [count, setCount] = useState<number>(0);
+    //          state: board count state (tempt)          //
+    const [userBoardList, setUserBoardList] = useState<BoardListItem[]>([]);
+
+    //          event handler : side card click handler          //
+    const onSideCardclickHandler = () => {
+      if (isMyPage) navigate(BOARD_PATH() + '/' + BOARD_WRITE_PATH());
+      else if (loginUser) navigate(USER_PATH(loginUser.email));
+      else navigate(AUTH_PATH());
+    }
+
+    //          effect : user email 변경시마다 실행할 함수           //
+    useEffect(()=>{
+      setUserBoardList(latestBoardListMock);
+      setCount(latestBoardListMock.length);
+    },[userEmail]);
+
     //          render : 유저 하단 화면 컴포넌트 랜더링          //
     return(
-      <div></div>
+      <div id="user-bottom-wrapper">
+        <div className="user-bottom-container">
+          <div className="user-bottom-title">{isMyPage ? '내 게시물 ' : '게시물 '}<span className='emphasis'>{'count'}</span></div>
+          <div className="user-bottom-contents-box">
+            {count === 0 ? 
+            <div className="user-bottom-contents-nothing">{'게시물이 없습니다.'}</div>
+            : <div className="user-bottom-contents">
+              {userBoardList.map(boardListItem => <BoardItem boardListItem={boardListItem} />)}
+            </div>
+            }
+            <div className="user-bottom-side-box">
+              <div className="user-bottom-side-card" onClick={onSideCardclickHandler}>
+                <div className="user-bottom-side-container">
+                  {isMyPage ? 
+                  <>
+                    <div className='icon-box'>
+                      <div className="icon edit-icon"></div>
+                    </div>
+                    <div className="user-bottom-side-text">{'글쓰기'}</div>
+                  </> : 
+                  <>
+                    <div className="user-bottom-side-text">{'내 게시물로 가기'}</div>
+                    <div className="icon-box">
+                      <div className="icon arrow-right-icon"></div>
+                    </div>
+                  </>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="user-bottom-pagination-box"></div>
+        </div>
+      </div>
     );
   };
 
