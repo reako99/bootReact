@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import './style.css';
 import defualtProfileImage from 'assets/image/default-profile-image.png';
 import { useParams } from 'react-router-dom';
@@ -16,7 +16,7 @@ export default function User() {
     const imageInputRef = useRef<HTMLInputElement | null >(null);
     
     //          state: my page state          //
-    const [isMyPage, setMyPage] = useState<boolean>(false);
+    const [isMyPage, setMyPage] = useState<boolean>(true);
 
     //          state: nickname change state          //
     const [isNicknameChange, setNicknameChange] = useState<boolean>(false);
@@ -30,11 +30,39 @@ export default function User() {
     //          state: profile image state          //
     const [profileImage, setProfileImage] = useState<string|null>(null);
 
+    //          event handler : nickname edit button click event handler          //
+    const onNicknameEditButtonClickHandler = () => {
+      setChangeNickname(nickname);
+      setNicknameChange(!isNicknameChange);
+    }
+
+    //          event handler : profile box click event handler          //
+    const onProfileImageClickHandler = () => {
+      if (!isMyPage) return;
+      if (!imageInputRef.current) return;
+      imageInputRef.current.click();
+    }
+
+    //         event handler : profile image change event handler          //
+    const onProfileImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+      if (!event.target.files || !event.target.files.length) return;
+
+      const file = event.target.files[0];
+      const data = new FormData();
+      data.append('file', file);
+    }
+
+    //         event handler : nickname change event handler          //
+    const onNicknameChangeHandler = (event:ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      setChangeNickname(value);
+    }
+
     //          effect: email path variable 변경시 실행할 함수           //
     useEffect(() => {
       if(!userEmail) return;
       setNickname('test');
-      setProfileImage('$2a$10$cX2rXUq9swDRvrm14HI/9.1KsMcanzzPpOlpfxl.y2q1RAlzo0/0K');
+      setProfileImage('http://localhost:4000/file/40c0acfc-92a6-4278-9d90-9ab96ec1f273.JPG');
     },[userEmail]);
 
     //          render : 유저 상단 화면 컴포넌트 랜더링          //
@@ -42,17 +70,15 @@ export default function User() {
       <div id='user-top-wrapper'>
         <div className='user-top-container'>
           {isMyPage ?
-          <div className="user-top-my-profile-image-box">
+          <div className="user-top-my-profile-image-box" onClick={onProfileImageClickHandler}>
             {profileImage !== null ?
               <div className="user-top-my-profile-image" style={{backgroundImage: `url(${profileImage})`}}></div> :
-              <div className="user-top-my-profile-image-nothing-box">
-                <div className='icon-box-large'>
-                  <div className="icon image-box-white-icon"></div>
-                </div>
+              <div className='icon-box-large'>
+                <div className="icon image-box-white-icon"></div>
               </div>
             }
             
-            <input ref={imageInputRef} type="file" accept='image/*' style={{display: 'none'}} />
+            <input ref={imageInputRef} type="file" accept='image/*' style={{display: 'none'}} onChange={onProfileImageChangeHandler} />
           </div> :
           <div className="user-top-profile-image-box" style={{backgroundImage: `url(${profileImage ? profileImage : defualtProfileImage})`}}></div>
           }
@@ -62,15 +88,16 @@ export default function User() {
               {isMyPage ?
               <>
               {isNicknameChange ? 
-              <input type="text" className="user-top-info-nickname-input" size={changeNickname.length + 1} value={changeNickname} />
+              <input type="text" className="user-top-info-nickname-input" size={changeNickname.length + 2} value={changeNickname} onChange={onNicknameChangeHandler}/>
               :
-              <>
+              
               <div className="user-top-info-nickname">{nickname}</div>
-              <div className="icon-button">
+              }
+              <div className="icon-button" onClick={onNicknameEditButtonClickHandler}>
                 <div className="icon edit-icon"></div>
               </div>
-              </>
-              }
+              
+              
               
               </> :
               <div className="user-top-info-nickname">{nickname}</div>
