@@ -130,10 +130,10 @@ export default function Header() {
     const onSignInButtonClickHandler = () => {
       navigate(AUTH_PATH());
     };
-    if (isLogin && userEmail === loginUser?.email)
+    if (loginUser !== null)
     //          render: 로그아웃 버튼 랜더링           //
     return <div className='white-button' onClick={onSignOutButtonClickHandler}>{'로그아웃'}</div>;
-    if (isLogin)
+    if (loginUser !== null)
     //          render: 마이페이지 버튼 랜더링           //
     return <div className='white-button' onClick={onMyPageButtonClickHandler}>{'마이페이지'}</div>;
     //          render: 로그인 버튼 랜더링           //
