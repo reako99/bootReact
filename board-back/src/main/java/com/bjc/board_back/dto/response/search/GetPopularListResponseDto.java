@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import com.bjc.board_back.common.ResponseCode;
 import com.bjc.board_back.common.ResponseMessage;
 import com.bjc.board_back.dto.response.ResponseDto;
-import com.bjc.board_back.repository.resultSet.GetPopularResultSet;
+import com.bjc.board_back.repository.resultSet.GetPopularListResultSet;
 
 import lombok.Getter;
 
@@ -18,17 +18,17 @@ public class GetPopularListResponseDto extends ResponseDto {
 
     private List<String> popularWordList;
 
-    private GetPopularListResponseDto(List<GetPopularResultSet> resultSets) {
+    private GetPopularListResponseDto(List<GetPopularListResultSet> resultSets) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         List<String> popularWordList = new ArrayList<>();
-        for (GetPopularResultSet resultSet: resultSets) {
+        for (GetPopularListResultSet resultSet: resultSets) {
             String popularWord = resultSet.getSearchWord();
             popularWordList.add(popularWord);
         }
         this.popularWordList = popularWordList;
     }
 
-    public static ResponseEntity<GetPopularListResponseDto> success(List<GetPopularResultSet> resultSets) {
+    public static ResponseEntity<GetPopularListResponseDto> success(List<GetPopularListResultSet> resultSets) {
         GetPopularListResponseDto result = new GetPopularListResponseDto(resultSets);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }

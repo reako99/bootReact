@@ -1,6 +1,6 @@
 package com.bjc.board_back.repository.resultSet;
 
-public interface GetPopularResultSet {
+public interface GetPopularListResultSet {
     String getSearchWord();
     int getCount();
 }
