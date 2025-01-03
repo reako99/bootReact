@@ -3,9 +3,13 @@ package com.bjc.board_back.service.implement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.bjc.board_back.dto.request.user.PatchNicknameRequestDto;
+import com.bjc.board_back.dto.request.user.PatchProfileImageRequestDto;
 import com.bjc.board_back.dto.response.ResponseDto;
 import com.bjc.board_back.dto.response.user.GetSignInUserResponseDto;
 import com.bjc.board_back.dto.response.user.GetUserResponseDto;
+import com.bjc.board_back.dto.response.user.PatchNicknameResponseDto;
+import com.bjc.board_back.dto.response.user.PatchProfileImageResponseDto;
 import com.bjc.board_back.entity.UserEntity;
 import com.bjc.board_back.repository.UserRepository;
 import com.bjc.board_back.service.UserService;
@@ -48,6 +52,43 @@ public class UserServiceImpl implements UserService {
             return ResponseDto.databaseError();
         }
         return GetUserResponseDto.success(userEntity);
+    }
+
+    @Override
+    public ResponseEntity<? super PatchNicknameResponseDto> patchNickname(PatchNicknameRequestDto dto, String email) {
+        try {
+            UserEntity userEntity = userRepository.findByEmail(email);
+            if (userEntity == null) return PatchNicknameResponseDto.noExistUser();
+
+            String nickname = dto.getNickname();
+            boolean existedNickname = userRepository.existsByNickname(nickname);
+            if (existedNickname) return PatchNicknameResponseDto.duplicateNickname();
+
+            userEntity.setNickname(nickname);
+            userRepository.save(userEntity);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return PatchNicknameResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super PatchProfileImageResponseDto> patchProfileImage(PatchProfileImageRequestDto dto, String email) {
+        try {
+            UserEntity userEntity = userRepository.findByEmail(email);
+            if (userEntity == null) return PatchProfileImageResponseDto.noExistUser();
+
+            String profileImage = dto.getProfileImage();
+            
+            userEntity.setProfileImage(profileImage);
+            userRepository.save(userEntity);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return PatchProfileImageResponseDto.success();
+       
     }
     
 }
