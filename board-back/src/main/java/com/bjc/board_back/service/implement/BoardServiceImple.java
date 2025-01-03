@@ -21,6 +21,7 @@ import com.bjc.board_back.dto.response.board.GetFavoriteListResponseDto;
 import com.bjc.board_back.dto.response.board.GetLatestBoardListResponseDto;
 import com.bjc.board_back.dto.response.board.GetSearchBoardResponseDto;
 import com.bjc.board_back.dto.response.board.GetTop3BoardListResponseDto;
+import com.bjc.board_back.dto.response.board.GetUserBoardListResponseDto;
 import com.bjc.board_back.dto.response.board.IncreaseViewCountResponseDto;
 import com.bjc.board_back.dto.response.board.PatchBoardResponseDto;
 import com.bjc.board_back.dto.response.board.PostBoardResponseDto;
@@ -317,6 +318,24 @@ public class BoardServiceImple implements BoardService{
             return ResponseDto.databaseError();
         }
         return GetSearchBoardResponseDto.success(boardListViewEntities);
+    }
+
+    @Override
+    public ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(String email) {
+
+        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+
+        try {
+            boolean existedUser = userRepository.existsByEmail(email);
+            if (!existedUser) return GetUserBoardListResponseDto.noExistUser();
+
+            boardListViewEntities = boardListViewRepository.findByWriterEmailOrderByWriteDatetimeDesc(email);
+        } catch (Exception exception) {
+           exception.printStackTrace();
+           return ResponseDto.databaseError();
+        }
+
+        return GetUserBoardListResponseDto.success(boardListViewEntities);
     }
 
     

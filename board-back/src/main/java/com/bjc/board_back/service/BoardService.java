@@ -17,6 +17,7 @@ import com.bjc.board_back.dto.response.board.PostBoardResponseDto;
 import com.bjc.board_back.dto.response.board.PostCommentResponseDto;
 import com.bjc.board_back.dto.response.board.PutFavoriteResponseDto;
 import com.bjc.board_back.dto.response.board.GetTop3BoardListResponseDto;
+import com.bjc.board_back.dto.response.board.GetUserBoardListResponseDto;
 
 public interface BoardService {
     ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber);
@@ -25,6 +26,7 @@ public interface BoardService {
     ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList();
     ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList();
     ResponseEntity<? super GetSearchBoardResponseDto> getSearchBoardList(String searchWord, String preSearchWord);
+    ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(String email);
 
     ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email);
     ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer boardNumber, String email);
