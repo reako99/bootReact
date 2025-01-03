@@ -24,7 +24,7 @@ export default function Main() {
     //            state: 주간 top3 게시물 리스트 상태           //
     const [top3BoardList , setTop3BoardList] = useState<BoardListItem[]>([]);
 
-    //           function : get top 3 board list resopnse handler           //
+    //           function : get top 3 board list response handler           //
     const getTop3BoardListResponse = (responseBody : GetTop3BoardListResponseDto | ResponseDto | null) => {
       if (!responseBody) return;
       const { code } = responseBody;

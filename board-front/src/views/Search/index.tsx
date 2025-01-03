@@ -36,7 +36,7 @@ export default function Search() {
   //          function : navigate function           //
   const navigate = useNavigate();
 
-  //          function : get search baord list resopnse           //
+  //          function : get search baord list response           //
   const getSearchBoardListResponse = (responseBody: GetSearchBoardListResponseDto | ResponseDto | null ) => {
     if (!responseBody) return;
     const { code } = responseBody;
@@ -49,7 +49,7 @@ export default function Search() {
     setPreSearchWord(searchWord);
   }
 
-  //          function : get relation word list resopnse           //
+  //          function : get relation word list response           //
   const getRelationListResponse = (responseBody: GetRelationListResponseDto | ResponseDto | null) => {
     if (!responseBody) return;
     const { code } = responseBody;
