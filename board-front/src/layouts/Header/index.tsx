@@ -72,6 +72,10 @@ export default function Header() {
         setStatus(!status);
         return;
       }
+      if(word.trim()==='') {
+        setStatus(!status);
+        return;
+      };
       navigate(SEARCH_PATH(word));
     }
 
