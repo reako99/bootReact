@@ -94,14 +94,14 @@ export default function Header() {
     if (!status)
     //          render: 검색 버튼 컴포넌트 랜더링(클릭 false 상태)           //
     return <div className='icon-button' onClick={onSearchButtonClickHandler}>
-              <div className='icon search-light-icon'></div>
+              <div className='icon search-light-icon blue-color'></div>
             </div>;
     //          render: 검색 버튼 컴포넌트 랜더링(클릭 true 상태)           //
     return (
     <div className='header-search-input-box'>
       <input className='header-search-input' type='text' placeholder='검색어를 입력해주세요.' value={word} onChange={onSearchWordChangeHandler} onKeyDown={onSearchWordKeyDownHandler}/>
       <div ref={searchButtonRef} className='icon-button' onClick={onSearchButtonClickHandler}>
-        <div className='icon search-light-icon'></div>
+        <div className='icon search-light-icon blue-color'></div>
       </div>
     </div>
     );
@@ -137,7 +137,7 @@ export default function Header() {
     //          render: 마이페이지 버튼 랜더링           //
     return <div className='white-button' onClick={onMyPageButtonClickHandler}>{'마이페이지'}</div>;
     //          render: 로그인 버튼 랜더링           //
-    return <div className='black-button' onClick={onSignInButtonClickHandler}>{'로그인'}</div>;
+    return <div className='blue-button' onClick={onSignInButtonClickHandler}>{'로그인'}</div>;
     
 
   };
@@ -229,9 +229,9 @@ export default function Header() {
       <div className='header-container'>
         <div className='header-left-box' onClick={onLogoClickHandler}>
           <div className='icon-box'>
-            <div className='icon logo-dark-icon'></div>
+            <div className='icon logo-dark-icon blue-color'></div>
           </div>
-          <div className='header-logo'>{'Yongs Board'}</div>
+          <div className='header-logo'>{'Miracle community'}</div>
         </div>
         <div className='header-right-box'>
           {(isAuthPage || isMainPage || isSearchPage || isBoardDetailPage) &&  <SearchButton />}         

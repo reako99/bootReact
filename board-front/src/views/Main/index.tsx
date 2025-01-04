@@ -43,9 +43,11 @@ export default function Main() {
     return (
       <div id='main-top-wrapper'>
         <div className='main-top-container'>
-          <div className='main-top-title'>{'Yongs board에서\n다양한 이야기를 나눠보세요'}</div>
+          <div className='main-top-title'>
+            
+            </div>
           <div className='main-top-contents-box'>
-            <div className='main-top-contents-title'>{'주간 top3 게시물'}</div>
+            <div className='main-top-contents-title'>{''}</div>
             <div className='main-top-contents'>
               {top3BoardList.map(top3ListItem => <Top3Item top3ListItem={top3ListItem} />)}              
             </div>
